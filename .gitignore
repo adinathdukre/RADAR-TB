@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.egg-info/
+data/
+work/
+weights/
+checkpoints/
+*.pt
+*.npy
+*.npz
+*.tar.gz
