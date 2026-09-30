@@ -12,8 +12,6 @@ averaging the whole image. Heads trained with a modality adversary remove acquis
 information, and the final prediction ensembles seeds, lung-cropped and full-frame views, and two
 input resolutions.
 
-<p align="center"><i>Figure placeholder: add <code>assets/radar.png</code> here.</i></p>
-
 ## Method
 
 1. **Preprocessing.** Any bit depth or format (PNG, JPEG, TIFF, DICOM) is windowed to 8-bit
@@ -55,8 +53,8 @@ image-only, offline and deterministic.
 ## Installation
 
 ```bash
-git clone https://github.com/adinathdukre/radar-tb.git
-cd radar-tb
+git clone https://github.com/adinathdukre/RADAR-TB.git
+cd RADAR-TB
 conda create -n radar python=3.10 -y && conda activate radar
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
@@ -66,8 +64,13 @@ pip install -e .
 ## Pretrained weights
 
 The 15 trained heads and the polarity reference are hosted at
-[adidukre/radar-tb](https://huggingface.co/adidukre/radar-tb). The download step below also
-fetches RAD-DINO and the lung segmenter:
+[adidukre/radar-tb](https://huggingface.co/adidukre/radar-tb):
+
+```bash
+hf download adidukre/radar-tb --local-dir weights
+```
+
+Alternatively, the step below downloads the heads together with RAD-DINO and the lung segmenter:
 
 ```bash
 python scripts/prepare.py --weights-repo adidukre/radar-tb
@@ -134,7 +137,8 @@ export RADAR_WORK=/path/to/work
 ```
 
 Montgomery and Shenzhen (NLM) are downloaded automatically and used for checkpoint selection
-only. The high-resolution heads additionally select on Pakistan and India sets; place them under
+only. The high-resolution heads additionally select on the Pakistan (Mendeley) and India (NITRD DA/DB)
+sets; place them under
 `$RADAR_WORK/external/{pakistan,india}/` either as `tb/` and `normal/` folders or with a
 `labels.csv` (`filename,label`).
 
@@ -205,3 +209,23 @@ RADAR builds on [RAD-DINO](https://huggingface.co/microsoft/rad-dino),
 [TorchXRayVision](https://github.com/mlmed/torchxrayvision) and the
 [ML-Decoder](https://github.com/Alibaba-MIIL/ML_Decoder) / GLoRI read-out. Please follow their
 licenses when using the pretrained models.
+
+We thank the organizers of the [MICCAI 2026 TREAT-MMTB challenge](https://treat-mmtb.mi2rl.co/)
+for the Task 2 training and evaluation data, and the providers of the public chest radiograph
+datasets used for model selection and evaluation:
+
+- **Montgomery County and Shenzhen** (U.S. National Library of Medicine): S. Jaeger et al.,
+  "Two public chest X-ray datasets for computer-aided screening of pulmonary diseases,"
+  *Quantitative Imaging in Medicine and Surgery*, 2014.
+- **TBX11K**: Y. Liu et al., "Rethinking computer-aided tuberculosis diagnosis," *CVPR*, 2020.
+  [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (non-commercial).
+- **Mendeley**: S. Kiran and I. Jabeen, "Dataset of Tuberculosis Chest X-rays Images," Mendeley
+  Data, [doi:10.17632/8j2g3csprk.2](https://doi.org/10.17632/8j2g3csprk.2).
+  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **India DA and DB** (National Institute of Tuberculosis and Respiratory Diseases, New Delhi):
+  A. Chauhan et al., "Role of Gist and PHOG features in computer-aided diagnosis of tuberculosis
+  without segmentation," *PLoS ONE*, 2014.
+
+These datasets were used only for checkpoint selection and evaluation. No exter
+contributes training gradients to the released weights. Each dataset remains subject to its own
+terms; please obtain it from the original source.
