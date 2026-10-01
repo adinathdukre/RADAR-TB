@@ -1,5 +1,5 @@
 <h1 align="center">
-<strong>RADAR: Acquisition-Invariant Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening</strong>
+<strong>RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening</strong>
 </h1>
 
 <div align="center">
@@ -10,13 +10,14 @@ alt="Typing SVG"
 style="margin-bottom:-10px; display:block;" />
 </a>
 
+[![Paper](https://img.shields.io/badge/Paper-OpenReview-8C1B13?style=for-the-badge)](https://openreview.net/forum?id=5qyZJRpe41)
 [![TREAT-MMTB](https://img.shields.io/badge/TREAT--MMTB_2026-MICCAI_Task_2-147B82?style=for-the-badge)](https://treat-mmtb.mi2rl.co/)
 [![Weights](https://img.shields.io/badge/HF-Weights-AECBFA?style=for-the-badge&logo=huggingface&logoColor=FFCC00&labelColor=grey)](https://huggingface.co/adidukre/radar-tb)
 [![RAD-DINO](https://img.shields.io/badge/Backbone-RAD--DINO_(frozen)-8A2BE2?style=for-the-badge)](https://huggingface.co/microsoft/rad-dino)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fadinathdukre%2FRADAR-TB&label=Views&countColor=%23147b82&style=for-the-badge)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fadinathdukre%2FRADAR-TB)
 
-<h3>🤗 <a href="https://huggingface.co/adidukre/radar-tb">Weights</a> &nbsp;|&nbsp; 🧠 <a href="#-method">Method</a> &nbsp;|&nbsp; ⚡ <a href="#-inference">Inference</a></h3>
+<h3>📄 <a href="https://openreview.net/forum?id=5qyZJRpe41">Paper</a> &nbsp;|&nbsp; 🤗 <a href="https://huggingface.co/adidukre/radar-tb">Weights</a> &nbsp;|&nbsp; 🧠 <a href="#-method">Method</a> &nbsp;|&nbsp; ⚡ <a href="#-inference">Inference</a></h3>
 
 **Atharva Atul Rege, [Adinath Madhavrao Dukre](https://github.com/adinathdukre), Sarth Santosh Shah, Imran Razzak**
 
@@ -25,11 +26,17 @@ style="margin-bottom:-10px; display:block;" />
 </div>
 
 ## 🔥 News
-- **[Oct 2026]** 🎉 Our RADAR paper is **accepted** at the MICCAI 2026 TREAT-MMTB challenge workshop.
 - **[30 Sep 2026]** 🚀 Code, the offline inference container and the 15 trained heads are released.
+- **[24 Aug 2026]** 🎉 Our RADAR paper is **accepted** at the MICCAI 2026 TREAT-MMTB challenge workshop and published on [OpenReview](https://openreview.net/forum?id=5qyZJRpe41).
 
 ## Overview
 **RADAR** is our entry to **MICCAI 2026 TREAT-MMTB Task 2** (tuberculosis vs. normal chest radiograph classification). It keeps the chest-radiograph foundation model [RAD-DINO](https://huggingface.co/microsoft/rad-dino) **frozen** and trains only small cross-attention read-out heads. A learned tuberculosis query pools patch tokens from four encoder depths, so the classifier can attend to localized disease instead of averaging the whole image. Heads trained with a modality adversary remove acquisition-specific information, and the final prediction ensembles seeds, lung-cropped and full-frame views, and two input resolutions.
+
+<p align="center">
+<img src="./docs/assets/fig1_overview.jpg" alt="RADAR overview" width="100%"/>
+<br/>
+<em><b>Fig. 1.</b> RADAR. One frozen encoder, with weights shared across passes, reads the lung crop and the full frame at 518 px and the lung crop again at 700 px. Patch tokens from blocks 3, 6, 9 and 12 are pooled by a learned tuberculosis query in each head group.</em>
+</p>
 
 ```mermaid
 flowchart LR
@@ -96,6 +103,12 @@ flowchart LR
 | Five held-out public sites, four countries | worst-site F1 | 0.9064 (vs. 0.8815 for the `dep` group alone) |
 
 </div>
+
+<p align="center">
+<img src="./docs/assets/fig2_results.png" alt="Per-site AUROC and score by case type" width="90%"/>
+<br/>
+<em><b>Fig. 2.</b> (a) Per-site AUROC on the held-out public sites, with and without the modality-adversarial groups. (b) Score by case type: at τ = 0.94 the false positive rate is 0.015 on clean Normal films and 0.294 on 6892 abnormal non-tuberculous films. Both panels use the 518 px three-group blend, without the 700 px branch.</em>
+</p>
 
 ## ⛏️ Installation
 
@@ -245,10 +258,11 @@ If you find our paper and code useful in your research, please cite:
 
 ```bibtex
 @inproceedings{rege2026radar,
-  title     = {RADAR: Acquisition-Invariant Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening},
+  title     = {RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening},
   author    = {Rege, Atharva Atul and Dukre, Adinath Madhavrao and Shah, Sarth Santosh and Razzak, Imran},
   booktitle = {MICCAI 2026 TREAT-MMTB Challenge},
-  year      = {2026}
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=5qyZJRpe41}
 }
 ```
 
