@@ -38,22 +38,6 @@ style="margin-bottom:-10px; display:block;" />
 <em><b>Fig. 1.</b> RADAR. One frozen encoder, with weights shared across passes, reads the lung crop and the full frame at 518 px and the lung crop again at 700 px. Patch tokens from blocks 3, 6, 9 and 12 are pooled by a learned tuberculosis query in each head group.</em>
 </p>
 
-```mermaid
-flowchart LR
-    X[Chest radiograph] --> P[Window to 8-bit<br/>lung crop, polarity fix]
-    P --> E518[Frozen RAD-DINO<br/>518 px, blocks 3/6/9/12]
-    P --> E700[Frozen RAD-DINO<br/>700 px]
-    E518 --> H1[dep heads x6]
-    E518 --> H2[adv heads x3]
-    E518 --> H3[cdan heads x3]
-    E700 --> H4[hires heads x3<br/>Platt map]
-    H1 --> B[Weighted blend]
-    H2 --> B
-    H3 --> B
-    H4 --> B
-    B --> Y[TB if p >= 0.94]
-```
-
 ## 📖 Contents
 - [🧠 Method](#-method)
 - [🏆 Results](#-results)
