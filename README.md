@@ -1,36 +1,79 @@
-# RADAR: Acquisition-Invariant Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening
+<h1 align="center">
+<strong>RADAR: Acquisition-Invariant Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening</strong>
+</h1>
 
-[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Weights-adidukre%2Fradar--tb-yellow)](https://huggingface.co/adidukre/radar-tb)
+<div align="center">
 
-Official code for **RADAR**, our entry to MICCAI 2026 TREAT-MMTB Task 2 (tuberculosis vs. normal
-chest radiograph classification).
+<a href="https://git.io/typing-svg">
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&pause=1000&color=147B82&center=true&width=560&lines=Freeze+RAD-DINO.+Train+only+the+read-out.;A+TB+query+attends+to+local+disease.;Adversaries+remove+acquisition+style."
+alt="Typing SVG"
+style="margin-bottom:-10px; display:block;" />
+</a>
 
-RADAR keeps the chest-radiograph foundation model [RAD-DINO](https://huggingface.co/microsoft/rad-dino)
-frozen and trains only small cross-attention read-out heads. A learned tuberculosis query pools
-patch tokens from four encoder depths, so the classifier can attend to localized disease instead of
-averaging the whole image. Heads trained with a modality adversary remove acquisition-specific
-information, and the final prediction ensembles seeds, lung-cropped and full-frame views, and two
-input resolutions.
+[![TREAT-MMTB](https://img.shields.io/badge/TREAT--MMTB_2026-MICCAI_Task_2-147B82?style=for-the-badge)](https://treat-mmtb.mi2rl.co/)
+[![Weights](https://img.shields.io/badge/HF-Weights-AECBFA?style=for-the-badge&logo=huggingface&logoColor=FFCC00&labelColor=grey)](https://huggingface.co/adidukre/radar-tb)
+[![RAD-DINO](https://img.shields.io/badge/Backbone-RAD--DINO_(frozen)-8A2BE2?style=for-the-badge)](https://huggingface.co/microsoft/rad-dino)
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fadinathdukre%2FRADAR-TB&label=Views&countColor=%23147b82&style=for-the-badge)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fadinathdukre%2FRADAR-TB)
 
-## Method
+<h3>🤗 <a href="https://huggingface.co/adidukre/radar-tb">Weights</a> &nbsp;|&nbsp; 🧠 <a href="#-method">Method</a> &nbsp;|&nbsp; ⚡ <a href="#-inference">Inference</a></h3>
 
-1. **Preprocessing.** Any bit depth or format (PNG, JPEG, TIFF, DICOM) is windowed to 8-bit
-   grayscale. Lungs are located with the TorchXRayVision ChestX-Det PSPNet and cropped; an
-   implausible mask falls back to the full frame. Inverted (MONOCHROME1-style) exports are detected
-   against a reference embedding and corrected.
-2. **Frozen encoder.** RAD-DINO ViT-B/14 at 518 px gives a 37 x 37 token grid. Tokens from blocks
-   {3, 6, 9, 12} are concatenated into 3072-d descriptors.
-3. **Attention read-out.** Each head is a single-query GLoRI / ML-Decoder cross-attention decoder
-   trained with AdamW and a weight EMA. Three head groups share one encoder pass:
+**Atharva Atul Rege, [Adinath Madhavrao Dukre](https://github.com/adinathdukre), Sarth Santosh Shah, Imran Razzak**
 
-   | group | heads | training |
-   |---|---|---|
+<img src="https://raw.githubusercontent.com/genmilab/VGS-Decoding/main/docs/assets/genmilab-logo.png" alt="GenMI Lab" height="60"/>
+
+</div>
+
+## 🔥 News
+- **[Oct 2026]** 🎉 Our RADAR paper is **accepted** at the MICCAI 2026 TREAT-MMTB challenge workshop.
+- **[30 Sep 2026]** 🚀 Code, the offline inference container and the 15 trained heads are released.
+
+## Overview
+**RADAR** is our entry to **MICCAI 2026 TREAT-MMTB Task 2** (tuberculosis vs. normal chest radiograph classification). It keeps the chest-radiograph foundation model [RAD-DINO](https://huggingface.co/microsoft/rad-dino) **frozen** and trains only small cross-attention read-out heads. A learned tuberculosis query pools patch tokens from four encoder depths, so the classifier can attend to localized disease instead of averaging the whole image. Heads trained with a modality adversary remove acquisition-specific information, and the final prediction ensembles seeds, lung-cropped and full-frame views, and two input resolutions.
+
+```mermaid
+flowchart LR
+    X[Chest radiograph] --> P[Window to 8-bit<br/>lung crop, polarity fix]
+    P --> E518[Frozen RAD-DINO<br/>518 px, blocks 3/6/9/12]
+    P --> E700[Frozen RAD-DINO<br/>700 px]
+    E518 --> H1[dep heads x6]
+    E518 --> H2[adv heads x3]
+    E518 --> H3[cdan heads x3]
+    E700 --> H4[hires heads x3<br/>Platt map]
+    H1 --> B[Weighted blend]
+    H2 --> B
+    H3 --> B
+    H4 --> B
+    B --> Y[TB if p >= 0.94]
+```
+
+## 📖 Contents
+- [🧠 Method](#-method)
+- [🏆 Results](#-results)
+- [⛏️ Installation](#️-installation)
+- [🧩 Pretrained Weights](#-pretrained-weights)
+- [⚡ Inference](#-inference)
+- [🐳 Docker](#-docker)
+- [🏋️ Training](#️-training)
+- [🗂️ Repository Structure](#️-repository-structure)
+- [📝 Citation](#-citation)
+- [📚 Acknowledgments](#-acknowledgments)
+- [📨 Contact](#-contact)
+- [📜 License](#-license)
+
+## 🧠 Method
+
+1. **Preprocessing.** Any bit depth or format (PNG, JPEG, TIFF, DICOM) is windowed to 8-bit grayscale. Lungs are located with the TorchXRayVision ChestX-Det PSPNet and cropped; an implausible mask falls back to the full frame. Inverted (MONOCHROME1-style) exports are detected against a reference embedding and corrected.
+2. **Frozen encoder.** RAD-DINO ViT-B/14 at 518 px gives a 37 × 37 token grid. Tokens from blocks {3, 6, 9, 12} are concatenated into 3072-d descriptors.
+3. **Attention read-out.** Each head is a single-query GLoRI / ML-Decoder cross-attention decoder trained with AdamW and a weight EMA. Three head groups share one encoder pass:
+
+   | Group | Heads | Training |
+   |---|:---:|---|
    | `dep` | 6 | CR-modality slice, 3 plain seeds + 3 seeds with style randomization (RandConv, Fourier amplitude, histogram matching) and weak/strong consistency |
    | `adv` | 3 | all modalities, gradient-reversal modality adversary (lambda = 1) |
    | `cdan` | 3 | all modalities, prediction-conditioned (CDAN+E) modality adversary |
 
-4. **High-resolution read-out.** The same frozen encoder at 700 px (50 x 50 tokens) is read by
-   three further adversarial heads, Platt-mapped onto the 518 px probability scale.
+4. **High-resolution read-out.** The same frozen encoder at 700 px (50 × 50 tokens) is read by three further adversarial heads, Platt-mapped onto the 518 px probability scale.
 5. **Decision rule.**
 
    ```
@@ -39,18 +82,22 @@ input resolutions.
    p     = 0.85 p_518 + 0.15 p_700,                     TB if p >= 0.94
    ```
 
-Acquisition metadata is used only as the adversary target during training. Inference is
-image-only, offline and deterministic.
+> [!NOTE]
+> Acquisition metadata is used only as the adversary target during training. Inference is image-only, offline and deterministic.
 
-## Results
+## 🏆 Results
 
-| setting | metric | RADAR |
-|---|---|---|
+<div align="center">
+
+| Setting | Metric | RADAR |
+|---|:---:|:---:|
 | TREAT-MMTB Task 2, external cohort (Korea, Mongolia, Peru, Philippines) | F1 | 0.8375 |
 | TREAT-MMTB Task 2, internal validation (1940 images), deployed container | F1 | 0.9840 |
 | Five held-out public sites, four countries | worst-site F1 | 0.9064 (vs. 0.8815 for the `dep` group alone) |
 
-## Installation
+</div>
+
+## ⛏️ Installation
 
 ```bash
 git clone https://github.com/adinathdukre/RADAR-TB.git
@@ -61,40 +108,40 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-## Pretrained weights
+## 🧩 Pretrained Weights
 
-The 15 trained heads and the polarity reference are hosted at
-[adidukre/radar-tb](https://huggingface.co/adidukre/radar-tb):
+The 15 trained heads and the polarity reference are hosted at [adidukre/radar-tb](https://huggingface.co/adidukre/radar-tb):
 
 ```bash
 hf download adidukre/radar-tb --local-dir weights
 ```
 
-Alternatively, the step below downloads the heads together with RAD-DINO and the lung segmenter:
+Alternatively, this step downloads the heads together with RAD-DINO and the lung segmenter:
 
 ```bash
 python scripts/prepare.py --weights-repo adidukre/radar-tb
 ```
 
-```
+```text
 weights/
-  dep_plain_seed{42,1337,2024}.pt
-  dep_aug_seed{42,1337,2024}.pt
-  adv_seed{42,1337,2024}.pt
-  cdan_seed{42,1337,2024}.pt
-  hires_seed{42,1337,2024}.pt
-  polarity_ref.npy
+├── dep_plain_seed{42,1337,2024}.pt
+├── dep_aug_seed{42,1337,2024}.pt
+├── adv_seed{42,1337,2024}.pt
+├── cdan_seed{42,1337,2024}.pt
+├── hires_seed{42,1337,2024}.pt
+└── polarity_ref.npy
 ```
 
-## Inference
+## ⚡ Inference
 
 ```bash
 python scripts/predict.py --input /path/to/images --output /path/to/output
 ```
 
-This writes `/path/to/output/prediction.csv` with columns `filename,TB/Normal`, one row per image
-found under the input directory (searched recursively). Add `--with-prob` to include the
-probability and `--threshold` to change the operating point.
+This writes `/path/to/output/prediction.csv` with columns `filename,TB/Normal`, one row per image found under the input directory (searched recursively).
+
+> [!TIP]
+> Add `--with-prob` to include the probability and `--threshold` to change the operating point.
 
 From Python:
 
@@ -105,10 +152,9 @@ model = Radar()
 probs, labels = model.predict(["/path/to/image1.png", "/path/to/image2.png"])
 ```
 
-### Docker
+## 🐳 Docker
 
-The container reads `/input` and writes `/output/prediction.csv`, runs with `--network none`, and
-falls back to CPU when no GPU is visible.
+The container reads `/input` and writes `/output/prediction.csv`, runs with `--network none`, and falls back to CPU when no GPU is visible.
 
 ```bash
 HF_HOME=checkpoints/hf RADAR_CACHE=checkpoints python scripts/prepare.py --weights-repo adidukre/radar-tb
@@ -119,11 +165,11 @@ docker run --rm --gpus all --network none \
     radar-tb
 ```
 
-## Training
+## 🏋️ Training
 
 Paths are set through environment variables (defaults in parentheses):
 
-| variable | meaning |
+| Variable | Meaning |
 |---|---|
 | `RADAR_DATA` | challenge data root holding `train/`, `test/`, `train.csv`, `test.csv` (`data/Task2/Data`) |
 | `RADAR_WORK` | lung boxes, token caches and public datasets (`work`) |
@@ -136,11 +182,10 @@ export RADAR_DATA=/path/to/Task2/Data
 export RADAR_WORK=/path/to/work
 ```
 
-Montgomery and Shenzhen (NLM) are downloaded automatically and used for checkpoint selection
-only. The high-resolution heads additionally select on the Pakistan (Mendeley) and India (NITRD DA/DB)
-sets; place them under
-`$RADAR_WORK/external/{pakistan,india}/` either as `tb/` and `normal/` folders or with a
-`labels.csv` (`filename,label`).
+Montgomery and Shenzhen (NLM) are downloaded automatically and used for checkpoint selection only. The high-resolution heads additionally select on the Pakistan (Mendeley) and India (NITRD DA/DB) sets; place them under `$RADAR_WORK/external/{pakistan,india}/` either as `tb/` and `normal/` folders or with a `labels.csv` (`filename,label`).
+
+<details open>
+<summary><strong>Training pipeline</strong></summary>
 
 ```bash
 # 1. backbone, segmenter and selection sets
@@ -169,30 +214,34 @@ python scripts/fit_platt.py
 python scripts/make_polarity_ref.py
 ```
 
-Blend weights, Platt parameters and the threshold live in `radar/config.py`. Checkpoints are
-selected on public held-out sites and never on the challenge test data; the Platt map is fitted on
-internal validation only.
+</details>
 
-## Repository structure
+> [!IMPORTANT]
+> Blend weights, Platt parameters and the threshold live in `radar/config.py`. Checkpoints are selected on public held-out sites and never on the challenge test data; the Platt map is fitted on internal validation only.
 
+## 🗂️ Repository Structure
+
+```text
+RADAR-TB/
+├── radar/
+│   ├── config.py          # paths and deployed constants
+│   ├── preprocessing.py   # image decoding, windowing, crop and square padding
+│   ├── segmentation.py    # PSPNet lung boxes
+│   ├── backbone.py        # frozen RAD-DINO wrapper
+│   ├── glori.py           # cross-attention read-out head
+│   ├── heads.py           # head construction, loading, EMA, gradient reversal
+│   ├── augment.py         # style randomization
+│   ├── tokens.py          # token caching
+│   ├── external.py        # public selection datasets
+│   ├── metrics.py         # F1, AUROC, worst-site selection
+│   └── inference.py       # end-to-end predictor
+├── scripts/               # data preparation, training and inference entry points
+└── docker/                # offline inference container
 ```
-radar/
-  config.py          paths and deployed constants
-  preprocessing.py   image decoding, windowing, crop and square padding
-  segmentation.py    PSPNet lung boxes
-  backbone.py        frozen RAD-DINO wrapper
-  glori.py           cross-attention read-out head
-  heads.py           head construction, loading, EMA, gradient reversal
-  augment.py         style randomization
-  tokens.py          token caching
-  external.py        public selection datasets
-  metrics.py         F1, AUROC, worst-site selection
-  inference.py       end-to-end predictor
-scripts/             data preparation, training and inference entry points
-docker/              offline inference container
-```
 
-## Citation
+## 📝 Citation
+
+If you find our paper and code useful in your research, please cite:
 
 ```bibtex
 @inproceedings{rege2026radar,
@@ -203,29 +252,30 @@ docker/              offline inference container
 }
 ```
 
-## Acknowledgements
+## 📚 Acknowledgments
 
-RADAR builds on [RAD-DINO](https://huggingface.co/microsoft/rad-dino),
-[TorchXRayVision](https://github.com/mlmed/torchxrayvision) and the
-[ML-Decoder](https://github.com/Alibaba-MIIL/ML_Decoder) / GLoRI read-out. Please follow their
-licenses when using the pretrained models.
+RADAR builds on [RAD-DINO](https://huggingface.co/microsoft/rad-dino), [TorchXRayVision](https://github.com/mlmed/torchxrayvision) and the [ML-Decoder](https://github.com/Alibaba-MIIL/ML_Decoder) / GLoRI read-out. Please follow their licenses when using the pretrained models.
 
-We thank the organizers of the [MICCAI 2026 TREAT-MMTB challenge](https://treat-mmtb.mi2rl.co/)
-for the Task 2 training and evaluation data, and the providers of the public chest radiograph
-datasets used for model selection and evaluation:
+We thank the organizers of the [MICCAI 2026 TREAT-MMTB challenge](https://treat-mmtb.mi2rl.co/) for the Task 2 training and evaluation data, and the providers of the public chest radiograph datasets used for model selection and evaluation.
 
-- **Montgomery County and Shenzhen** (U.S. National Library of Medicine): S. Jaeger et al.,
-  "Two public chest X-ray datasets for computer-aided screening of pulmonary diseases,"
-  *Quantitative Imaging in Medicine and Surgery*, 2014.
-- **TBX11K**: Y. Liu et al., "Rethinking computer-aided tuberculosis diagnosis," *CVPR*, 2020.
-  [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (non-commercial).
-- **Mendeley**: S. Kiran and I. Jabeen, "Dataset of Tuberculosis Chest X-rays Images," Mendeley
-  Data, [doi:10.17632/8j2g3csprk.2](https://doi.org/10.17632/8j2g3csprk.2).
-  [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-- **India DA and DB** (National Institute of Tuberculosis and Respiratory Diseases, New Delhi):
-  A. Chauhan et al., "Role of Gist and PHOG features in computer-aided diagnosis of tuberculosis
-  without segmentation," *PLoS ONE*, 2014.
+<details>
+<summary><strong>Public datasets used for selection and evaluation</strong></summary>
 
-These datasets were used only for checkpoint selection and evaluation. No exter
-contributes training gradients to the released weights. Each dataset remains subject to its own
-terms; please obtain it from the original source.
+- **Montgomery County and Shenzhen** (U.S. National Library of Medicine): S. Jaeger et al., "Two public chest X-ray datasets for computer-aided screening of pulmonary diseases," *Quantitative Imaging in Medicine and Surgery*, 2014.
+- **TBX11K**: Y. Liu et al., "Rethinking computer-aided tuberculosis diagnosis," *CVPR*, 2020. [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/) (non-commercial).
+- **Mendeley**: S. Kiran and I. Jabeen, "Dataset of Tuberculosis Chest X-rays Images," Mendeley Data, [doi:10.17632/8j2g3csprk.2](https://doi.org/10.17632/8j2g3csprk.2). [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+- **India DA and DB** (National Institute of Tuberculosis and Respiratory Diseases, New Delhi): A. Chauhan et al., "Role of Gist and PHOG features in computer-aided diagnosis of tuberculosis without segmentation," *PLoS ONE*, 2014.
+
+These datasets were used only for checkpoint selection and evaluation. No external dataset contributes training gradients to the released weights. Each dataset remains subject to its own terms; please obtain it from the original source.
+
+</details>
+
+## 📨 Contact
+For questions or collaboration, please open an [issue](https://github.com/adinathdukre/RADAR-TB/issues) or reach out to [Adinath Madhavrao Dukre](https://github.com/adinathdukre).
+
+## 📜 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+> [!IMPORTANT]
+> RADAR is intended for research only. It is not approved for clinical use and must not inform any diagnostic or screening decision.
