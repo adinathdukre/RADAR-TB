@@ -1,0 +1,72 @@
+{
+ "key": "RADAR",
+ "title": "RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening",
+ "abstract": "Reliable tuberculosis screening from chest radiographs requires models that remain robust across acquisition modalities and clinical populations. We present \\textbf{RADAR}, a read-out framework that uses a frozen chest-radiograph foundation model and learns only lightweight task-specific heads. RADAR extracts patch representations from multiple depths of the frozen encoder and combines them with a learned tuberculosis query through cross-attention, allowing the classifier to selectively aggregate spatially localized disease evidence. To reduce reliance on acquisition-specific shortcuts, we train complementary heads with modality-adversarial and conditional adversarial objectives, while image-space style randomisation and prediction consistency further encourage acquisition-invariant representations. The resulting heads are ensembled across seeds and input views, with a higher-resolution read-out providing additional sensitivity to small focal abnormalities. The complete system requires no backbone finetuning and uses no acquisition metadata at inference. On MICCAI 2026 TREAT-MMTB Task~2, RADAR achieves an internal F1 of $0.9840$ and an external F1 of \\textbf{$0.8375$}. Across five held-out public sites, the acquisition-adversarial design improves the worst-site F1 from $0.8815$ to $0.9064$. These results show that a frozen foundation representation combined with an acquisition-aware, attention-based read-out can provide a robust and efficient approach to cross-domain tuberculosis screening.\n\n\n\\keywords{Tuberculosis \\and Chest radiography \\and Foundation models \\and Attention\npooling \\and Domain-adversarial training.}",
+ "macros": "\\renewcommand{\\arraystretch}{0.92}\n\\renewcommand{\\topfraction}{0.92}\n\\renewcommand{\\bottomfraction}{0.70}\n\\renewcommand{\\textfraction}{0.07}\n\\renewcommand{\\floatpagefraction}{0.80}",
+ "figures": [
+  {
+   "files": [
+    "RADAR.png"
+   ],
+   "caption": "RADAR. One frozen encoder, weights shared across passes, reads the lung crop and the full\nframe at $518$\\,px and the lung crop again at $700$\\,px. Patch tokens from blocks $3,6,9,12$ are\npooled by a learned tuberculosis query in each head group. The three $518$\\,px groups each read\nboth views and fuse them in probability space at $\\lambda_c=0.90$ before the weighted sum; the\n$700$\\,px group is Platt-mapped and enters at $\\omega=0.15$. Every constant is that of Eq.~(5).\nBlue is frozen, orange is trained.}\n\\label{fig:arch",
+   "label": "fig:arch",
+   "resolved": [
+    "RADAR.png"
+   ]
+  },
+  {
+   "files": [
+    "RADAR_results.png"
+   ],
+   "caption": "Both panels use the $518$\\,px three-group blend at two-view $0.90$, the deployed score\nwithout its $700$\\,px branch. \\textbf{(a)} per-site AUROC on the held-out public sites, with and\nwithout the modality-adversarial groups. \\textbf{(b)} score by case type: at $\\tau=0.94$ the false positive\nrate is $0.015$ on clean Normal films and $0.294$ on the $6892$ abnormal films of\nTable~\\ref{tab:pools}.}\n\\label{fig:results",
+   "label": "fig:results",
+   "resolved": [
+    "RADAR_results.png"
+   ]
+  },
+  {
+   "files": [
+    "RADAR_examples.png"
+   ],
+   "caption": "Real inputs with the RADAR score $p$, decided at $\\tau=0.94$.}\n\\label{fig:examples",
+   "label": "fig:examples",
+   "resolved": [
+    "RADAR_examples.png"
+   ]
+  }
+ ],
+ "tables": [
+  {
+   "latex": "[!tbp]\n\\centering\n\\setlength{\\abovecaptionskip}{2pt}\\setlength{\\belowcaptionskip}{2pt}\n\\caption{Label prevalence by acquisition modality. Only CR is close to balanced, so it is the\nslice the base heads are supervised on; the other $1074$ validation images are scored without any head having seen a label from their\nmodality. XA is train-only.}\n\\label{tab:mod}\n\\scriptsize\n\\setlength{\\tabcolsep}{6pt}\n\\begin{tabular}{lcccc}\n\\toprule\n & \\multicolumn{2}{c}{Train} & \\multicolumn{2}{c}{Internal validation} \\\\\n\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\nModality & $n$ & TB fraction & $n$ & TB fraction \\\\\n\\midrule\nCR & 3354 & 0.467 & 866 & 0.430 \\\\\nDX & 2316 & 0.012 & 537 & 0.021 \\\\\nXC & 2076 & 1.000 & 537 & 1.000 \\\\\nXA & 11 & 1.000 & n/a & n/a \\\\\n\\bottomrule\n\\end{tabular}",
+   "label": "tab:mod"
+  },
+  {
+   "latex": "[!tbp]\n\\centering\n\\setlength{\\abovecaptionskip}{2pt}\\setlength{\\belowcaptionskip}{2pt}\n\\caption{\\textbf{(a)} Internal validation ($1940$ images, $920$ positive). Rows two to six add one\ncomponent at a time at a threshold chosen on a held-out in-domain pool; the last row is the submitted external container at $\\tau=0.94$. \n\\textbf{(b)} Held-out public sites, none of them trained on, scored with the $518$\\,px three-group\nblend of Eq.~(5) at the deployed two-view weight $0.90$; the $700$\\,px branch is reported\nseparately in Section~4. Per-site values are AUROC; mean and worst F1 are leave-one-site-out in the threshold only, which\nis fitted on the other four sites. The blend weights saw all five, so the panel ranks configurations fairly but does not estimate them out-of-sample.}\n\\label{tab:main}\n\\scriptsize\n\\begin{tabular}{lccc}\n\\multicolumn{4}{l}{\\textbf{(a) Internal validation}}\\\\\n\\toprule\nConfiguration & P & R & F1 \\\\\n\\midrule\nLinear probe on pooled tokens & 0.940 & 0.999 & 0.9684 \\\\\nCross-attention head, 3-seed ensemble & 0.989 & 0.976 & 0.9825 \\\\\n\\quad $+$ image-space style randomisation & 0.993 & 0.982 & 0.9874 \\\\\n\\quad $+$ 6-head Ensemble of Averages & 0.996 & 0.979 & 0.9874 \\\\\n\\quad $+$ two-view fusion & 0.997 & 0.980 & 0.9885 \\\\\n\\quad $+$ in-domain source probe (\\textbf{RADAR}, internal phase) & 0.999 & 1.000 & \\textbf{0.9995} \\\\\n\\midrule\n\\textbf{RADAR}, external configuration ($\\tau{=}0.94$) & 1.000 & 0.969 & 0.9840 \\\\\n\\bottomrule\n\\end{tabular}\n\n\\vspace{1.2mm}\n\\setlength{\\tabcolsep}{3pt}\n\\begin{tabular}{lccccccc}\n\\multicolumn{8}{l}{\\textbf{(b) Cross-domain panel}}\\\\\n\\toprule\nConfiguration & Mont. & Shen. & TBX11K & Mend. & India & Mean F1 & Worst site F1 \\\\\n\\midrule\nBase ensemble, \\texttt{dep} only & 0.981 & 0.948 & 0.968 & 0.934 & \\textbf{0.960} & 0.9023 & 0.8815 \\\\\n$0.6\\,\\texttt{dep}+0.4\\,\\texttt{adv}$ & 0.986 & 0.952 & 0.974 & 0.959 & 0.957 & \\textbf{0.9291} & \\textbf{0.9071} \\\\\n\\textbf{RADAR} ($0.39/0.26/0.35$) & \\textbf{0.989} & \\textbf{0.962} & \\textbf{0.976} & \\textbf{0.961} & 0.957 & 0.9282 & 0.9064 \\\\\n\\bottomrule\n\\end{tabular}",
+   "label": "tab:main"
+  },
+  {
+   "latex": "[!tbp]\n\\centering\n\\setlength{\\abovecaptionskip}{2pt}\\setlength{\\belowcaptionskip}{2pt}\n\\caption{False positive rate of the $518$\\,px blend on abnormal non-tuberculous films. PadChest is\nnot independent: the challenge Normals come from it, so it understates the shift.}\n\\label{tab:pools}\n\\scriptsize\n\\setlength{\\tabcolsep}{5pt}\n\\begin{tabular}{lccc}\n\\toprule\nCorpus of abnormal non-tuberculous films & $n$ & FPR at $0.835$ & FPR at $0.94$ \\\\\n\\midrule\nChestX-ray14, held-out split \\cite{wang2017chestx} & 2600 & 0.696 & 0.538 \\\\\nTBX11K \\texttt{sick} \\cite{liu2020rethinking} & 1500 & 0.347 & 0.210 \\\\\nOpen-i / Indiana \\cite{demner2016preparing} & 1571 & 0.243 & 0.139 \\\\\nPadChest \\cite{bustos2020padchest} & 1221 & 0.152 & 0.075 \\\\\n\\bottomrule\n\\end{tabular}",
+   "label": "tab:pools"
+  }
+ ],
+ "sections": [
+  "s:Introduction",
+  "s:Data",
+  "s:Method",
+  "s:Preprocessing and frozen backbone",
+  "s:Multi-depth token stack and cross-attention read-out",
+  "s:Style randomisation and consistency",
+  "s:Ensembling and two-view fusion",
+  "s:Acquisition-adversarial groups",
+  "s:High-resolution read-out",
+  "s:Decision rule and cost",
+  "s:Experiments",
+  "s:The residual gap",
+  "s:Conclusion"
+ ],
+ "figureFiles": [
+  "RADAR.png",
+  "RADAR_results.png",
+  "RADAR_examples.png"
+ ]
+}
