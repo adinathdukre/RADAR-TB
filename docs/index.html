@@ -4,11 +4,12 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening</title>
-<meta name="description" content="RADAR is our entry to MICCAI 2026 TREAT-MMTB Task 2 (tuberculosis vs. normal chest radiograph classification). It keeps the chest-radiograph foundation model RAD-DINO frozen and trains only small cross-attention read-out heads. A learned tuberculosis query pools patch tokens from four encoder depths" />
+<meta name="description" content="Reliable tuberculosis screening from chest radiographs requires models that remain robust across acquisition modalities and clinical populations. We present RADAR, a read-out framework that uses a frozen chest-radiograph foundation model and learns only lightweight task-specific heads. RADAR extract" />
 <meta name="theme-color" content="#147b82" />
 <meta property="og:title" content="RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening" />
-<meta property="og:description" content="RADAR is our entry to MICCAI 2026 TREAT-MMTB Task 2 (tuberculosis vs. normal chest radiograph classification). It keeps the chest-radiograph foundation model RAD-DINO frozen and trains only small cross-attention read-out heads. A learned tuberculosis query pools patch tokens from four encoder depths" />
+<meta property="og:description" content="Reliable tuberculosis screening from chest radiographs requires models that remain robust across acquisition modalities and clinical populations. We present RADAR, a read-out framework that uses a frozen chest-radiograph foundation model and learns only lightweight task-specific heads. RADAR extract" />
 <meta property="og:type" content="website" />
+<meta property="og:image" content="assets/paper/fig1.png" />
 <meta name="citation_title" content="RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening" />
 <link rel="icon" href="https://raw.githubusercontent.com/genmilab/VGS-Decoding/main/docs/assets/genmilab-logo.png" />
 <link rel="stylesheet" href="project.css" />
@@ -21,7 +22,7 @@
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header"><div class="nav-wrap">
 <a class="brand" href="#top">RADAR</a>
-<nav aria-label="Main navigation"><a href="#-method">Method</a><a href="#-results">Results</a><a href="#️-installation">Installation</a><a href="#-pretrained-weights">Weights</a><a href="#-inference">Inference</a><a href="#-citation">Citation</a></nav>
+<nav aria-label="Main navigation"><a href="#abstract">Abstract</a><a href="#method">Method</a><a href="#results">Results</a><a href="#code">Code</a><a href="#citation">BibTeX</a></nav>
 <a class="nav-code" href="https://github.com/adinathdukre/RADAR-TB">GitHub <span aria-hidden="true">↗</span></a>
 </div></header>
 <main id="main">
@@ -35,25 +36,12 @@
 
 
 <p class="hero-description">Freeze RAD-DINO. Train only the read-out.<br />A TB query attends to local disease.<br />Adversaries remove acquisition style.</p>
-<div class="resource-links"><a class="button button-primary" href="https://openreview.net/forum?id=5qyZJRpe41"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h9l5 5v13H5zM14 3v6h5M8 13h8M8 17h6"/></svg>Paper</a><a class="button button-secondary" href="https://github.com/adinathdukre/RADAR-TB"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 14"/></svg>Code</a><a class="button button-secondary" href="https://huggingface.co/adidukre/radar-tb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></svg>Weights <span aria-hidden="true">↗</span></a><a class="button button-secondary" href="#-results">Results <span aria-hidden="true">↓</span></a><a class="button button-secondary" href="#-citation">Citation <span aria-hidden="true">↓</span></a></div>
+<div class="resource-links"><a class="button button-primary" href="https://openreview.net/forum?id=5qyZJRpe41"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h9l5 5v13H5zM14 3v6h5M8 13h8M8 17h6"/></svg>Paper</a><a class="button button-secondary" href="https://github.com/adinathdukre/RADAR-TB"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 7-5 5 5 5m8-10 5 5-5 5m-3-12-2 14"/></svg>Code</a><a class="button button-secondary" href="https://huggingface.co/adidukre/radar-tb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10"/></svg>Weights <span aria-hidden="true">↗</span></a><a class="button button-secondary" href="#results">Results <span aria-hidden="true">↓</span></a><a class="button button-secondary" href="#citation">BibTeX <span aria-hidden="true">↓</span></a></div>
 <div class="hero-meta"><span>TREAT MMTB 2026 MICCAI Task 2</span></div>
 </section>
-<section class="section container narrow page-section" id="-news"><p class="section-kicker">01 / NEWS</p><h2>News</h2>
-<ul>
-<li><strong>[30 Sep 2026]</strong> 🚀 Code, the offline inference container and the 15 trained heads are released.</li>
-<li><strong>[24 Aug 2026]</strong> 🎉 Our RADAR paper is <strong>accepted</strong> at the MICCAI 2026 TREAT-MMTB challenge workshop and published on <a href="https://openreview.net/forum?id=5qyZJRpe41">OpenReview</a>.</li>
-</ul>
-</section>
-<section class="section container narrow page-section" id="overview"><p class="section-kicker">02 / OVERVIEW</p><h2>Overview</h2>
-<p><strong>RADAR</strong> is our entry to <strong>MICCAI 2026 TREAT-MMTB Task 2</strong> (tuberculosis vs. normal chest radiograph classification). It keeps the chest-radiograph foundation model <a href="https://huggingface.co/microsoft/rad-dino">RAD-DINO</a> <strong>frozen</strong> and trains only small cross-attention read-out heads. A learned tuberculosis query pools patch tokens from four encoder depths, so the classifier can attend to localized disease instead of averaging the whole image. Heads trained with a modality adversary remove acquisition-specific information, and the final prediction ensembles seeds, lung-cropped and full-frame views, and two input resolutions.</p>
-<p align="center">
-<img src="https://raw.githubusercontent.com/adinathdukre/RADAR-TB/main/docs/assets/fig1_overview.jpg" alt="RADAR overview" width="100%"/>
-<br/>
-<em><b>Fig. 1.</b> RADAR. One frozen encoder, with weights shared across passes, reads the lung crop and the full frame at 518 px and the lung crop again at 700 px. Patch tokens from blocks 3, 6, 9 and 12 are pooled by a learned tuberculosis query in each head group.</em>
-</p>
-</section>
-<section class="section container narrow page-section" id="-method"><p class="section-kicker">03 / METHOD</p><h2>Method</h2>
-<ol>
+<section class="section abstract-section" id="abstract"><div class="container narrow"><p class="section-kicker">01 / ABSTRACT</p><h2>Abstract</h2><div class="abstract-text"><p>Reliable tuberculosis screening from chest radiographs requires models that remain robust across acquisition modalities and clinical populations. We present <strong>RADAR</strong>, a read-out framework that uses a frozen chest-radiograph foundation model and learns only lightweight task-specific heads. RADAR extracts patch representations from multiple depths of the frozen encoder and combines them with a learned tuberculosis query through cross-attention, allowing the classifier to selectively aggregate spatially localized disease evidence. To reduce reliance on acquisition-specific shortcuts, we train complementary heads with modality-adversarial and conditional adversarial objectives, while image-space style randomisation and prediction consistency further encourage acquisition-invariant representations. The resulting heads are ensembled across seeds and input views, with a higher-resolution read-out providing additional sensitivity to small focal abnormalities. The complete system requires no backbone finetuning and uses no acquisition metadata at inference. On MICCAI 2026 TREAT-MMTB Task 2, RADAR achieves an internal F1 of <span class="math inline">0.9840</span> and an external F1 of <strong><span class="math inline">0.8375</span></strong>. Across five held-out public sites, the acquisition-adversarial design improves the worst-site F1 from <span class="math inline">0.8815</span> to <span class="math inline">0.9064</span>. These results show that a frozen foundation representation combined with an acquisition-aware, attention-based read-out can provide a robust and efficient approach to cross-domain tuberculosis screening.</p></div></div></section>
+<section class="figure-section container" id="overview-figure"><figure class="overview-figure"><img src="assets/paper/fig1.png" alt="Figure 1" loading="lazy" /><figcaption><strong>Figure 1.</strong> RADAR. One frozen encoder, weights shared across passes, reads the lung crop and the full frame at <span class="math inline">518</span> px and the lung crop again at <span class="math inline">700</span> px. Patch tokens from blocks <span class="math inline">3,6,9,12</span> are pooled by a learned tuberculosis query in each head group. The three <span class="math inline">518</span> px groups each read both views and fuse them in probability space at <span class="math inline">\lambda_c=0.90</span> before the weighted sum; the <span class="math inline">700</span> px group is Platt-mapped and enters at <span class="math inline">\omega=0.15</span>. Every constant is that of Eq. (5). Blue is frozen, orange is trained.</figcaption></figure></section>
+<section class="section container narrow page-section" id="method"><p class="section-kicker">02 / METHOD</p><h2>Method</h2><ol>
 <li><strong>Preprocessing.</strong> Any bit depth or format (PNG, JPEG, TIFF, DICOM) is windowed to 8-bit grayscale. Lungs are located with the TorchXRayVision ChestX-Det PSPNet and cropped; an implausible mask falls back to the full frame. Inverted (MONOCHROME1-style) exports are detected against a reference embedding and corrected.</li>
 <li><strong>Frozen encoder.</strong> RAD-DINO ViT-B/14 at 518 px gives a 37 × 37 token grid. Tokens from blocks {3, 6, 9, 12} are concatenated into 3072-d descriptors.</li>
 <li><strong>Attention read-out.</strong> Each head is a single-query GLoRI / ML-Decoder cross-attention decoder trained with AdamW and a weight EMA. Three head groups share one encoder pass:</li>
@@ -91,10 +79,9 @@
 <p><code>p_518 = sum_k w_k [0.90 p_k(crop) + 0.10 p_k(full)],   w = (dep 0.39, adv 0.26, cdan 0.35)
    p_700 = sigmoid(1.425 * logit(p_hires) + 0.057)
    p     = 0.85 p_518 + 0.15 p_700,                     TB if p &gt;= 0.94</code></p>
-<div class="callout callout-note"><strong>Note</strong><p>Acquisition metadata is used only as the adversary target during training. Inference is image-only, offline and deterministic.</p></div>
-</section>
-<section class="section container narrow page-section" id="-results"><p class="section-kicker">04 / RESULTS</p><h2>Results</h2>
-<div align="center">
+<div class="callout callout-note"><strong>Note</strong><p>Acquisition metadata is used only as the adversary target during training. Inference is image-only, offline and deterministic.</p></div></section>
+<section class="section container page-section results-wide" id="results"><div class="narrow"><p class="section-kicker">03 / RESULTS</p><h2>Results from the paper</h2><p class="section-intro">Tables and figures as they appear in the paper.</p></div><figure class="paper-table-figure"><figcaption><strong>Table 1.</strong> Label prevalence by acquisition modality. Only CR is close to balanced, so it is the slice the base heads are supervised on; the other <span class="math inline">1074</span> validation images are scored without any head having seen a label from their modality. XA is train-only.</figcaption><img src="assets/paper/tab1.png" alt="Table 1" loading="lazy" style="width:min(100%,278px)" /></figure><figure class="paper-table-figure"><figcaption><strong>Table 2.</strong> <strong>(a)</strong> Internal validation (<span class="math inline">1940</span> images, <span class="math inline">920</span> positive). Rows two to six add one component at a time at a threshold chosen on a held-out in-domain pool; the last row is the submitted external container at <span class="math inline">\tau=0.94</span>. <strong>(b)</strong> Held-out public sites, none of them trained on, scored with the <span class="math inline">518</span> px three-group blend of Eq. (5) at the deployed two-view weight <span class="math inline">0.90</span>; the <span class="math inline">700</span> px branch is reported separately in Section 4. Per-site values are AUROC; mean and worst F1 are leave-one-site-out in the threshold only, which is fitted on the other four sites. The blend weights saw all five, so the panel ranks configurations fairly but does not estimate them out-of-sample.</figcaption><img src="assets/paper/tab2.png" alt="Table 2" loading="lazy" style="width:min(100%,432px)" /></figure><figure class="paper-table-figure"><figcaption><strong>Table 3.</strong> False positive rate of the <span class="math inline">518</span> px blend on abnormal non-tuberculous films. PadChest is not independent: the challenge Normals come from it, so it understates the shift.</figcaption><img src="assets/paper/tab3.png" alt="Table 3" loading="lazy" style="width:min(100%,380px)" /></figure><figure class="paper-figure"><img src="assets/paper/fig2.png" alt="Figure 2" loading="lazy" /><figcaption><strong>Figure 2.</strong> Both panels use the <span class="math inline">518</span> px three-group blend at two-view <span class="math inline">0.90</span>, the deployed score without its <span class="math inline">700</span> px branch. <strong>(a)</strong> per-site AUROC on the held-out public sites, with and without the modality-adversarial groups. <strong>(b)</strong> score by case type: at <span class="math inline">\tau=0.94</span> the false positive rate is <span class="math inline">0.015</span> on clean Normal films and <span class="math inline">0.294</span> on the <span class="math inline">6892</span> abnormal films of Table 3.</figcaption></figure><figure class="paper-figure"><img src="assets/paper/fig3.png" alt="Figure 3" loading="lazy" /><figcaption><strong>Figure 3.</strong> Real inputs with the RADAR score <span class="math inline">p</span>, decided at <span class="math inline">\tau=0.94</span>.</figcaption></figure></section>
+<section class="section container narrow page-section" id="more-results"><p class="section-kicker">04 / MORE RESULTS</p><h2>More from the code release</h2><details><summary>Results</summary><div align="center">
 <div class="table-scroll" tabindex="0"><table class="paper-table">
 <thead>
 <tr>
@@ -126,19 +113,14 @@
 <img src="https://raw.githubusercontent.com/adinathdukre/RADAR-TB/main/docs/assets/fig2_results.png" alt="Per-site AUROC and score by case type" width="90%"/>
 <br/>
 <em><b>Fig. 2.</b> (a) Per-site AUROC on the held-out public sites, with and without the modality-adversarial groups. (b) Score by case type: at τ = 0.94 the false positive rate is 0.015 on clean Normal films and 0.294 on 6892 abnormal non-tuberculous films. Both panels use the 518 px three-group blend, without the 700 px branch.</em>
-</p>
-</section>
-<section class="section container narrow page-section" id="️-installation"><p class="section-kicker">05 / INSTALLATION</p><h2>Installation</h2>
-<pre><code class="language-bash">git clone https://github.com/adinathdukre/RADAR-TB.git
+</p></details></section>
+<section class="section container narrow page-section" id="code"><p class="section-kicker">05 / CODE</p><h2>Code and usage</h2><details open><summary>Installation</summary><pre><code class="language-bash">git clone https://github.com/adinathdukre/RADAR-TB.git
 cd RADAR-TB
 conda create -n radar python=3.10 -y &amp;&amp; conda activate radar
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
 pip install -r requirements.txt
 pip install -e .
-</code></pre>
-</section>
-<section class="section container narrow page-section" id="-pretrained-weights"><p class="section-kicker">06 / PRETRAINED WEIGHTS</p><h2>Pretrained Weights</h2>
-<p>The 15 trained heads and the polarity reference are hosted at <a href="https://huggingface.co/adidukre/radar-tb">adidukre/radar-tb</a>:</p>
+</code></pre></details><details><summary>Pretrained Weights</summary><p>The 15 trained heads and the polarity reference are hosted at <a href="https://huggingface.co/adidukre/radar-tb">adidukre/radar-tb</a>:</p>
 <pre><code class="language-bash">hf download adidukre/radar-tb --local-dir weights
 </code></pre>
 <p>Alternatively, this step downloads the heads together with RAD-DINO and the lung segmenter:</p>
@@ -151,10 +133,7 @@ pip install -e .
 ├── cdan_seed{42,1337,2024}.pt
 ├── hires_seed{42,1337,2024}.pt
 └── polarity_ref.npy
-</code></pre>
-</section>
-<section class="section container narrow page-section" id="-inference"><p class="section-kicker">07 / INFERENCE</p><h2>Inference</h2>
-<pre><code class="language-bash">python scripts/predict.py --input /path/to/images --output /path/to/output
+</code></pre></details><details><summary>Inference</summary><pre><code class="language-bash">python scripts/predict.py --input /path/to/images --output /path/to/output
 </code></pre>
 <p>This writes <code>/path/to/output/prediction.csv</code> with columns <code>filename,TB/Normal</code>, one row per image found under the input directory (searched recursively).</p>
 <div class="callout callout-tip"><strong>Tip</strong><p>Add <code>--with-prob</code> to include the probability and <code>--threshold</code> to change the operating point.</p></div>
@@ -164,20 +143,14 @@ pip install -e .
 
 model = Radar()
 probs, labels = model.predict([&quot;/path/to/image1.png&quot;, &quot;/path/to/image2.png&quot;])
-</code></pre>
-</section>
-<section class="section container narrow page-section" id="-docker"><p class="section-kicker">08 / DOCKER</p><h2>Docker</h2>
-<p>The container reads <code>/input</code> and writes <code>/output/prediction.csv</code>, runs with <code>--network none</code>, and falls back to CPU when no GPU is visible.</p>
+</code></pre></details><details><summary>Docker</summary><p>The container reads <code>/input</code> and writes <code>/output/prediction.csv</code>, runs with <code>--network none</code>, and falls back to CPU when no GPU is visible.</p>
 <pre><code class="language-bash">HF_HOME=checkpoints/hf RADAR_CACHE=checkpoints python scripts/prepare.py --weights-repo adidukre/radar-tb
 docker build -f docker/Dockerfile -t radar-tb .
 docker run --rm --gpus all --network none \
     -v /path/to/images:/input:ro \
     -v /path/to/output:/output \
     radar-tb
-</code></pre>
-</section>
-<section class="section container narrow page-section" id="️-training"><p class="section-kicker">09 / TRAINING</p><h2>Training</h2>
-<p>Paths are set through environment variables (defaults in parentheses):</p>
+</code></pre></details><details><summary>Training</summary><p>Paths are set through environment variables (defaults in parentheses):</p>
 <div class="table-scroll" tabindex="0"><table class="paper-table">
 <thead>
 <tr>
@@ -240,10 +213,7 @@ python scripts/fit_platt.py
 python scripts/make_polarity_ref.py
 </code></pre>
 </details>
-<div class="callout callout-important"><strong>Important</strong><p>Blend weights, Platt parameters and the threshold live in <code>radar/config.py</code>. Checkpoints are selected on public held-out sites and never on the challenge test data; the Platt map is fitted on internal validation only.</p></div>
-</section>
-<section class="section container narrow page-section" id="️-repository-structure"><p class="section-kicker">10 / REPOSITORY STRUCTURE</p><h2>Repository Structure</h2>
-<pre><code class="language-text">RADAR-TB/
+<div class="callout callout-important"><strong>Important</strong><p>Blend weights, Platt parameters and the threshold live in <code>radar/config.py</code>. Checkpoints are selected on public held-out sites and never on the challenge test data; the Platt map is fitted on internal validation only.</p></div></details><details><summary>Repository Structure</summary><pre><code class="language-text">RADAR-TB/
 ├── radar/
 │   ├── config.py          # paths and deployed constants
 │   ├── preprocessing.py   # image decoding, windowing, crop and square padding
@@ -258,10 +228,15 @@ python scripts/make_polarity_ref.py
 │   └── inference.py       # end-to-end predictor
 ├── scripts/               # data preparation, training and inference entry points
 └── docker/                # offline inference container
-</code></pre>
-</section>
-<section class="section container narrow page-section" id="-acknowledgments"><p class="section-kicker">11 / ACKNOWLEDGMENTS</p><h2>Acknowledgments</h2>
-<p>RADAR builds on <a href="https://huggingface.co/microsoft/rad-dino">RAD-DINO</a>, <a href="https://github.com/mlmed/torchxrayvision">TorchXRayVision</a> and the <a href="https://github.com/Alibaba-MIIL/ML_Decoder">ML-Decoder</a> / GLoRI read-out. Please follow their licenses when using the pretrained models.</p>
+</code></pre></details></section>
+<section class="section citation-section" id="citation"><div class="container narrow"><p class="section-kicker">06 / CITATION</p><div class="citation-heading"><h2>BibTeX</h2><button class="copy-button light-copy" data-copy="bibtex" type="button">Copy BibTeX</button></div><pre class="bibtex"><code id="bibtex">@inproceedings{rege2026radar,
+  title     = {RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening},
+  author    = {Rege, Atharva Atul and Dukre, Adinath Madhavrao and Shah, Sarth Santosh and Razzak, Imran},
+  booktitle = {MICCAI 2026 TREAT-MMTB Challenge},
+  year      = {2026},
+  url       = {https://openreview.net/forum?id=5qyZJRpe41}
+}</code></pre></div></section>
+<section class="section container narrow page-section small-section" id="acknowledgments"><h3>Acknowledgments</h3><p>RADAR builds on <a href="https://huggingface.co/microsoft/rad-dino">RAD-DINO</a>, <a href="https://github.com/mlmed/torchxrayvision">TorchXRayVision</a> and the <a href="https://github.com/Alibaba-MIIL/ML_Decoder">ML-Decoder</a> / GLoRI read-out. Please follow their licenses when using the pretrained models.</p>
 <p>We thank the organizers of the <a href="https://treat-mmtb.mi2rl.co/">MICCAI 2026 TREAT-MMTB challenge</a> for the Task 2 training and evaluation data, and the providers of the public chest radiograph datasets used for model selection and evaluation.</p>
 <details>
 <summary><strong>Public datasets used for selection and evaluation</strong></summary>
@@ -272,22 +247,10 @@ python scripts/make_polarity_ref.py
 <li><strong>India DA and DB</strong> (National Institute of Tuberculosis and Respiratory Diseases, New Delhi): A. Chauhan et al., "Role of Gist and PHOG features in computer-aided diagnosis of tuberculosis without segmentation," <em>PLoS ONE</em>, 2014.</li>
 </ul>
 <p>These datasets were used only for checkpoint selection and evaluation. No external dataset contributes training gradients to the released weights. Each dataset remains subject to its own terms; please obtain it from the original source.</p>
-</details>
-</section>
-<section class="section container narrow page-section" id="-contact"><p class="section-kicker">12 / CONTACT</p><h2>Contact</h2>
-<p>For questions or collaboration, please open an <a href="https://github.com/adinathdukre/RADAR-TB/issues">issue</a> or reach out to <a href="https://github.com/adinathdukre">Adinath Madhavrao Dukre</a>.</p>
-</section>
-<section class="section container narrow page-section" id="-license"><p class="section-kicker">13 / LICENSE</p><h2>License</h2>
-<p>This project is licensed under the MIT License. See the <a href="https://github.com/adinathdukre/RADAR-TB/tree/main/LICENSE">LICENSE</a> file for details.</p>
-<div class="callout callout-important"><strong>Important</strong><p>RADAR is intended for research only. It is not approved for clinical use and must not inform any diagnostic or screening decision.</p></div>
-</section>
-<section class="section citation-section" id="-citation"><div class="container narrow"><p class="section-kicker">14 / CITATION</p><div class="citation-heading"><h2>Cite this work.</h2><button class="copy-button light-copy" data-copy="bibtex" type="button">Copy BibTeX</button></div><p>If you find our paper and code useful in your research, please cite:</p><pre class="bibtex"><code id="bibtex">@inproceedings{rege2026radar,
-  title     = {RADAR: Acquisition-Adversarial Attention Pooling over a Frozen Chest-Radiograph Foundation Model for Tuberculosis Screening},
-  author    = {Rege, Atharva Atul and Dukre, Adinath Madhavrao and Shah, Sarth Santosh and Razzak, Imran},
-  booktitle = {MICCAI 2026 TREAT-MMTB Challenge},
-  year      = {2026},
-  url       = {https://openreview.net/forum?id=5qyZJRpe41}
-}</code></pre></div></section>
+</details></section>
+<section class="section container narrow page-section small-section" id="contact"><h3>Contact</h3><p>For questions or collaboration, please open an <a href="https://github.com/adinathdukre/RADAR-TB/issues">issue</a> or reach out to <a href="https://github.com/adinathdukre">Adinath Madhavrao Dukre</a>.</p></section>
+<section class="section container narrow page-section small-section" id="license"><h3>License</h3><p>This project is licensed under the MIT License. See the <a href="https://github.com/adinathdukre/RADAR-TB/tree/main/LICENSE">LICENSE</a> file for details.</p>
+<div class="callout callout-important"><strong>Important</strong><p>RADAR is intended for research only. It is not approved for clinical use and must not inform any diagnostic or screening decision.</p></div></section>
 </main>
 <footer class="site-footer"><div class="container">
 <a class="lab-footer" href="https://github.com/genmilab" aria-label="GenMI-Lab on GitHub">
