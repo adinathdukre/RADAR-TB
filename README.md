@@ -11,13 +11,14 @@ style="margin-bottom:-10px; display:block;" />
 </a>
 
 [![Paper](https://img.shields.io/badge/Paper-OpenReview-8C1B13?style=for-the-badge)](https://openreview.net/forum?id=5qyZJRpe41)
+[![Project Page](https://img.shields.io/badge/Project-Page-147B82?style=for-the-badge&logo=googlechrome&logoColor=white)](https://adinathdukre.github.io/RADAR-TB/)
 [![TREAT-MMTB](https://img.shields.io/badge/TREAT--MMTB_2026-MICCAI_Task_2-147B82?style=for-the-badge)](https://treat-mmtb.mi2rl.co/)
 [![Weights](https://img.shields.io/badge/HF-Weights-AECBFA?style=for-the-badge&logo=huggingface&logoColor=FFCC00&labelColor=grey)](https://huggingface.co/adidukre/radar-tb)
 [![RAD-DINO](https://img.shields.io/badge/Backbone-RAD--DINO_(frozen)-8A2BE2?style=for-the-badge)](https://huggingface.co/microsoft/rad-dino)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Visitors](https://api.visitorbadge.io/api/combined?path=https%3A%2F%2Fgithub.com%2Fadinathdukre%2FRADAR-TB&label=Views&countColor=%23147b82&style=for-the-badge)](https://visitorbadge.io/status?path=https%3A%2F%2Fgithub.com%2Fadinathdukre%2FRADAR-TB)
 
-<h3>📄 <a href="https://openreview.net/forum?id=5qyZJRpe41">Paper</a> &nbsp;|&nbsp; 🤗 <a href="https://huggingface.co/adidukre/radar-tb">Weights</a> &nbsp;|&nbsp; 🧠 <a href="#-method">Method</a> &nbsp;|&nbsp; ⚡ <a href="#-inference">Inference</a></h3>
+<h3>📄 <a href="https://openreview.net/forum?id=5qyZJRpe41">Paper</a> &nbsp;|&nbsp; 🌐 <a href="https://adinathdukre.github.io/RADAR-TB/">Project Page</a> &nbsp;|&nbsp; 🤗 <a href="https://huggingface.co/adidukre/radar-tb">Weights</a> &nbsp;|&nbsp; 🧠 <a href="#-method">Method</a> &nbsp;|&nbsp; ⚡ <a href="#-inference">Inference</a></h3>
 
 **Atharva Atul Rege, [Adinath Madhavrao Dukre](https://github.com/adinathdukre), Sarth Santosh Shah, Imran Razzak**
 
